@@ -212,7 +212,7 @@ function handleTotal(db) {
         window.localStorage.setItem("cart", JSON.stringify(db.cart));
         printTotales(db);
         printProducsInCart(db);
-        printProducs(db);
+        printProducs(db.products);
     });
 }
 
@@ -267,37 +267,30 @@ function filterProductsBD(db, filterProducts) {
     }
 }
 
-function handlePrintProductUnit(db) {
-    const productsHTML = document.querySelector(".showModalProduct");
+function handleTheme() {
+    const iconTheme = document.querySelector(".bx-moon");
 
-    var imagenContainer = document.getElementById("#showModalProduct");
+    iconTheme.addEventListener("click", function () {
+        document.body.classList.toggle("dark-theme");
+    });
+}
 
-    console.log(imagenContainer);
+function handleNavbar() {
+    const iconMenu = document.querySelector(".bx-menu");
+    const menu = document.querySelector(".navbar_menu");
 
-    productsHTML.addEventListener("click", function (e) {
-        console.log(e.target.classList.contains("#showModalProduct"));
+    iconMenu.addEventListener("click", function () {
+        menu.classList.toggle("menu__show");
+    });
+}
 
-        if (e.target.classList.contains("#showModalProduct")) {
-            const id = Number(e.target.id);
-            console.log(id);
-
-            //<h4> <p class="showModalProduct" id="${product.id}">${product.name}</p> </h4>
-            /*             const productFind = db.products.find(
-                (product) => product.id === id
-            );
-            if (db.cart[productFind.id]) {
-                if (productFind.quantity === db.cart[productFind.id].amount)
-                    return alert("No tenemos mas en Stock");
-                db.cart[productFind.id].amount++;
-            } else {
-                db.cart[productFind.id] = { ...productFind, amount: 1 };
-            }
-            window.localStorage.setItem("cart", JSON.stringify(db.cart));
-            printProducsInCart(db);
-            printTotales(db);
-            handlePrintAmountProducts(db);
-
- */
+function transitionNavbar() {
+    const navbar = document.querySelector(".navbar");
+    window.addEventListener("scroll", function () {
+        if (window.scrollY > 200) {
+            navbar.classList.add("navbar__active");
+        } else {
+            navbar.classList.remove("navbar__active");
         }
     });
 }
@@ -323,6 +316,7 @@ async function main() {
     handleTotal(db);
     handlePrintAmountProducts(db);
 
-    handlePrintProductUnit(db);
+    handleTheme();
+    transitionNavbar();
 }
 main();

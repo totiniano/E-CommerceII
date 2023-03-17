@@ -797,6 +797,12 @@ footer > p > b > a {
     .contentCart {
         width: 400px;
     }
+
+    .navbar__active {
+        background-color: var(--body-color);
+        color: #000000;
+        box-shadow: var(--shadow-general);
+    }
 }
 
 @keyframes scroll {
