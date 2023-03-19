@@ -36,32 +36,6 @@ function printProducs(db) {
     productsHtml.innerHTML = html;
 }
 
-/* function printProducs(db) {
-    const productsHtml = document.querySelector(".products");
-    html = "";
-    for (const product of db.products) {
-        const buttonAdd = product.quantity
-            ? `<i class="bx bx-plus" id="${product.id}"></i>`
-            : "<span class='sout-of-stock'>Sin Stock</span>";
-        html += `
-            <div class="product"> 
-                <div class="product__img">
-                    <img src="${product.image}" alt="imagen" />
-                </div>
-                <div class="product__info">
-                    <h4>${product.name} | <span><b>Stock</b>:${product.quantity}</span></h4>
-                    <h5>
-                       $ ${product.price} USD
-                       ${buttonAdd}
-                    </h5>
-                </div> 
-            </div>
-        `;
-    }
-    productsHtml.innerHTML = html;
-}
- */
-
 function handleShowCart() {
     const iconartHTML = document.querySelector(".bx-shopping-bag");
     const cartHTML = document.querySelector(".contentCart");
@@ -77,7 +51,6 @@ function addToCartFromProducts(db) {
     productsHTML.addEventListener("click", function (e) {
         if (e.target.classList.contains("bx-plus")) {
             const id = Number(e.target.id);
-
             const productFind = db.products.find(
                 (product) => product.id === id
             );
@@ -229,12 +202,6 @@ function filterProductsBD(db, filterProducts) {
     const selectFilterHtml = document.querySelectorAll(".filter");
     const productHtml = document.querySelector(".products");
 
-    /*     const segundoParrafo = document.querySelector(
-        '.filter[data-filter=".shirt"] p:nth-of-type(2)'
-    ).textContent[0];
-
-    console.log(segundoParrafo);
- */
     for (const productCategoryFilter of selectFilterHtml) {
         productCategoryFilter.addEventListener("click", function (e) {
             const prodCategory =
@@ -295,6 +262,84 @@ function transitionNavbar() {
     });
 }
 
+function printProductUnitView(db) {
+    const productViewHTML = document.querySelector(".products");
+    const productModal = document.querySelector(".modalProduct");
+
+    productViewHTML.addEventListener("click", function (e) {
+        if (e.target.classList.contains("showModalProduct")) {
+            const id = Number(e.target.id);
+
+            const productFind = db.products.find(
+                (product) => product.id === id
+            );
+
+            productModal.classList.add("modalProduct__show");
+            const buttonAdd = productFind.quantity
+                ? `<i class="bx bx-plus" id="${productFind.id}"></i>`
+                : "<span class='product__soldout'>Sold out</span>";
+
+            let html = "";
+
+            html += `
+                <div class="contentProduct">
+                    <i class="bx bxs-x-circle closeModal"></i>
+                    <div class="contentProduct__img">
+                        <img src="${productFind.image}" alt="">
+                    </div>
+                    <h3 class="contentProduct__name">${productFind.name} <span>${productFind.category}</span></h3>
+                    <p class="contentProduct__p">${productFind.description}</p>
+                    <div class="contentProduct__info">
+                        <h3>
+                            $ ${productFind.price} USD ${buttonAdd} 
+                        </h3>
+                        <p>Stock:${productFind.quantity}</p>
+                    </div>
+                </div>
+                `;
+            productModal.innerHTML = html;
+        }
+    });
+}
+
+function addProductCartWindowModal(db) {
+    const productsHTML = document.querySelector(".modalProduct");
+
+    productsHTML.addEventListener("click", function (e) {
+        if (e.target.classList.contains("bx-plus")) {
+            const id = Number(e.target.id);
+
+            console.log(id);
+            console.log(e.target);
+
+            const productFind = db.products.find(
+                (product) => product.id === id
+            );
+
+            if (db.cart[productFind.id]) {
+                if (productFind.quantity === db.cart[productFind.id].amount)
+                    return alert("No tenemos mas en Stock");
+                db.cart[productFind.id].amount++;
+            } else {
+                db.cart[productFind.id] = { ...productFind, amount: 1 };
+            }
+            window.localStorage.setItem("cart", JSON.stringify(db.cart));
+            printProducsInCart(db);
+            printTotales(db);
+            handlePrintAmountProducts(db);
+        }
+    });
+}
+
+function handleClosModal() {
+    const productModalHtml = document.querySelector(".modalProduct");
+    productModalHtml.addEventListener("click", function (e) {
+        if (e.target.classList.contains("closeModal")) {
+            productModalHtml.classList.toggle("modalProduct__show");
+        }
+    });
+}
+
 async function main() {
     const db = {
         products:
@@ -310,13 +355,17 @@ async function main() {
 
     handleShowCart();
     addToCartFromProducts(db);
+    printProductUnitView(db); //Visualiza ventana modal y adiciona producto a carrito de compras
     printProducsInCart(db);
     handleProductsInCart(db);
     printTotales(db);
     handleTotal(db);
     handlePrintAmountProducts(db);
+    addProductCartWindowModal(db); //Adicionar desde el boton modal
 
     handleTheme();
     transitionNavbar();
+    handleClosModal();
 }
+
 main();
