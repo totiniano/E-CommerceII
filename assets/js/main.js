@@ -237,8 +237,10 @@ function filterProductsBD(db, filterProducts) {
 function handleTheme() {
     const iconTheme = document.querySelector(".bx-moon");
 
-    iconTheme.addEventListener("click", function () {
+    iconTheme.addEventListener("click", function (e) {
         document.body.classList.toggle("dark-theme");
+
+        iconTheme.classList.toggle("bx-sun");
     });
 }
 
@@ -304,7 +306,6 @@ function printProductUnitView(db) {
 
 function addProductCartWindowModal(db) {
     const productsHTML = document.querySelector(".modalProduct");
-
     productsHTML.addEventListener("click", function (e) {
         if (e.target.classList.contains("bx-plus")) {
             const id = Number(e.target.id);
@@ -340,7 +341,7 @@ function handleClosModal() {
     });
 }
 
-function handleLinkActive() {
+function handleLinkActiveMenu() {
     const linkMenuprod = document.querySelectorAll(".navbar_menu");
     for (const prdIem of linkMenuprod) {
         prdIem.addEventListener("click", function (e) {
@@ -362,6 +363,66 @@ function handleLinkActive() {
         });
     }
 }
+
+function handleFilterProduct() {
+    const filterHtml = document.querySelectorAll(".filter");
+
+    const linkProducts = document.querySelector(
+        'ul.navbar_menu a[href="#products"]'
+    );
+
+    filterHtml.forEach((filter) => {
+        const changeFilter = "";
+        filter.addEventListener("click", (e) => {
+            let charWords = e.target.textContent.trim().split(" ");
+            console.log(charWords);
+            if (charWords == "Show" || charWords == "all") {
+                changeFilter = document.querySelector(
+                    '.filter[data-filter="all"]'
+                );
+                changeFilter.classList.remove("filter__active");
+            }
+        });
+        // linkHome.classList.remove("filter__active");
+    });
+
+    /*    
+    for (i = 0; i<4; i++) {
+        let divElement =""
+        switch (i) {
+            case 0:
+                 divElement = document.querySelector('.filter[data-filter="all"]'); 
+                 break;
+            case 1 :
+                 divElement = document.querySelector('.filter[data-filter=".shirt"]'); 
+                break;
+            case 2:
+                divElement = document.querySelector('.filter[data-filter=".hoddie"]'); 
+                break;
+            case 3:
+                divElement = document.querySelector('.filter[data-filter=".sweater"]'); 
+                break;
+            default:
+                break;
+            }
+            divElement.classList.remove("filter__active");
+    }
+*/
+
+    //    divElement.classList.add('filter__active'); // Agregar la clase "filter__active" al elemento div
+
+    /*   const selectFilterHtml = document.querySelectorAll(".content_filter");
+    for (const prodCategoryFilter of selectFilterHtml) {
+        prodCategoryFilter.addEventListener("click", function (e) {
+            console.log(e.target);
+        });
+    } */
+}
+
+/* const selectFilterHtml = document.querySelectorAll(".filter");
+const productHtml = document.querySelector(".products");
+for (const productCategoryFilter of selectFilterHtml) {
+ */
 
 async function main() {
     const db = {
@@ -387,8 +448,10 @@ async function main() {
 
     handleTheme();
     transitionNavbar();
-    handleLinkActive();
+    handleLinkActiveMenu(); // En el menú se queda activo al hacer click
     handleClosModal();
+
+    handleFilterProduct();
 }
 
 main();
