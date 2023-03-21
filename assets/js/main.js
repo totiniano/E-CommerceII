@@ -200,8 +200,18 @@ function handlePrintAmountProducts(db) {
 
 function filterProductsBD(db, filterProducts) {
     const selectFilterHtml = document.querySelectorAll(".filter");
-    const productHtml = document.querySelector(".products");
 
+    //Removemos lo seleccionado para marcar lo seleccionado como nuevo
+    const selecHtml = document.querySelectorAll(".content_filter .filter");
+    selecHtml.forEach((filter) => {
+        filter.addEventListener("click", (e) => {
+            selecHtml.forEach((filter) =>
+                filter.classList.remove("filter__active")
+            );
+        });
+    });
+
+    let divElement = "";
     for (const productCategoryFilter of selectFilterHtml) {
         productCategoryFilter.addEventListener("click", function (e) {
             const prodCategory =
@@ -209,16 +219,28 @@ function filterProductsBD(db, filterProducts) {
 
             if (prodCategory === "show all") {
                 filterProducts = db.products;
+                divElement = document.querySelector(
+                    '.filter[data-filter="all"]'
+                );
             } else {
                 let cantidFilter = 0;
                 switch (prodCategory) {
                     case "shirt":
+                        divElement = document.querySelector(
+                            '.filter[data-filter=".shirt"]'
+                        );
                         cantidFilter = 7;
                         break;
                     case "hoddie":
+                        divElement = document.querySelector(
+                            '.filter[data-filter=".hoddie"]'
+                        );
                         cantidFilter = 6;
                         break;
                     case "sweater":
+                        divElement = document.querySelector(
+                            '.filter[data-filter=".sweater"]'
+                        );
                         cantidFilter = 5;
                         break;
                     default:
@@ -230,6 +252,7 @@ function filterProductsBD(db, filterProducts) {
                 filterProducts = filterProducts.slice(0, cantidFilter);
             }
             printProducs(filterProducts);
+            divElement.classList.add("filter__active");
         });
     }
 }
@@ -310,9 +333,6 @@ function addProductCartWindowModal(db) {
         if (e.target.classList.contains("bx-plus")) {
             const id = Number(e.target.id);
 
-            console.log(id);
-            console.log(e.target);
-
             const productFind = db.products.find(
                 (product) => product.id === id
             );
@@ -364,66 +384,6 @@ function handleLinkActiveMenu() {
     }
 }
 
-function handleFilterProduct() {
-    const filterHtml = document.querySelectorAll(".filter");
-
-    const linkProducts = document.querySelector(
-        'ul.navbar_menu a[href="#products"]'
-    );
-
-    filterHtml.forEach((filter) => {
-        const changeFilter = "";
-        filter.addEventListener("click", (e) => {
-            let charWords = e.target.textContent.trim().split(" ");
-            console.log(charWords);
-            if (charWords == "Show" || charWords == "all") {
-                changeFilter = document.querySelector(
-                    '.filter[data-filter="all"]'
-                );
-                changeFilter.classList.remove("filter__active");
-            }
-        });
-        // linkHome.classList.remove("filter__active");
-    });
-
-    /*    
-    for (i = 0; i<4; i++) {
-        let divElement =""
-        switch (i) {
-            case 0:
-                 divElement = document.querySelector('.filter[data-filter="all"]'); 
-                 break;
-            case 1 :
-                 divElement = document.querySelector('.filter[data-filter=".shirt"]'); 
-                break;
-            case 2:
-                divElement = document.querySelector('.filter[data-filter=".hoddie"]'); 
-                break;
-            case 3:
-                divElement = document.querySelector('.filter[data-filter=".sweater"]'); 
-                break;
-            default:
-                break;
-            }
-            divElement.classList.remove("filter__active");
-    }
-*/
-
-    //    divElement.classList.add('filter__active'); // Agregar la clase "filter__active" al elemento div
-
-    /*   const selectFilterHtml = document.querySelectorAll(".content_filter");
-    for (const prodCategoryFilter of selectFilterHtml) {
-        prodCategoryFilter.addEventListener("click", function (e) {
-            console.log(e.target);
-        });
-    } */
-}
-
-/* const selectFilterHtml = document.querySelectorAll(".filter");
-const productHtml = document.querySelector(".products");
-for (const productCategoryFilter of selectFilterHtml) {
- */
-
 async function main() {
     const db = {
         products:
@@ -451,7 +411,7 @@ async function main() {
     handleLinkActiveMenu(); // En el menú se queda activo al hacer click
     handleClosModal();
 
-    handleFilterProduct();
+    // handleFilterProduct();
 }
 
 main();
